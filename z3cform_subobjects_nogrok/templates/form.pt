@@ -1,0 +1,98 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xml:lang="en"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+  metal:use-macro="context/main_template/macros/master"
+  i18n:domain="sample"
+  lang="en">
+  <body>
+    <tal tal:condition="nothing">
+      <metal use-macro="topslot">
+        <script> sdfqsdfqsdfgqsdfqsdf</script>
+      </metal>
+    </tal>
+    <metal:main metal:fill-slot="main">
+      <tal:main metal:define-macro="main">
+        <h1 class="documentFirstHeading" tal:content="view/form_instance/title"></h1>
+        <div id="skel-contents" tal:attributes="data-thesis-mode view/form_instance/mode;">
+          <tal:form tal:define="form nocall:view/form_instance">
+            <tal:with-form-as-view define="view nocall:form">
+              <metal:block metal:use-macro="form/@@ploneform-macros/titlelessform">
+                <input type="hidden"
+                  name="fieldset"
+                  tal:define="current_fieldset request/fieldset | string:#fieldsetlegend-default"
+                  tal:condition="python:has_groups and enable_form_tabbing"
+                  tal:attributes="value current_fieldset"
+                  />
+                <metal:fields-slot metal:fill-slot="fields">
+                  <metal:fields-slot
+                    define-macro="fields"
+                    tal:define="show_default_label show_default_label|nothing;
+                    hidden_groups form/hidden_groups|hidden_groups|python: [];
+                    has_groups has_groups|nothing">
+                    <metal:fields-slot metal:define-slot="fields">
+                      <!-- Default fieldset -->
+                      <fieldset id="fieldset-default" tal:omit-tag="not:show_default_label">
+                        <legend tal:condition="show_default_label"
+                          tal:attributes="id string:fieldsetlegend-default"
+                          tal:content="default_fieldset_label">Form name</legend>
+                        <metal:define define-macro="widget_rendering">
+                            <tal:widgets repeat="widget view/widgets/values">
+                                <metal:field-slot define-slot="field">
+                                    <metal:field define-macro="field">
+                                        <tal:widget tal:replace="structure widget/@@ploneform-render-widget"/>
+                                    </metal:field>
+                                </metal:field-slot>
+                            </tal:widgets>
+                        </metal:define>
+                      </fieldset>
+                      <!-- Secondary fieldsets -->
+                      <tal:block tal:repeat="group groups" condition="has_groups">
+                        <fieldset tal:condition="python:group.__name__ not in hidden_groups"
+                          tal:define="fieldset_name repeat/group/index"
+                          tal:attributes="id string:fieldset-${fieldset_name};
+                          class string:kssattr-fieldset-${fieldset_name};
+                          data-fieldset fieldset_name">
+                          <legend tal:define="form_name group/label"
+                            tal:condition="form_name"
+                            tal:attributes="id string:fieldsetlegend-${repeat/group/index}"
+                            tal:content="form_name">Form name</legend>
+                          <p i18n:translate=""
+                            tal:define="group_description group/description|nothing"
+                            tal:condition="group_description"
+                            tal:content="structure group_description">
+                            Description
+                          </p>
+                          <tal:block tal:define="errors group/widgets/errors"
+                            tal:condition="errors"
+                            tal:repeat="error errors">
+                            <div class="field error"
+                              tal:condition="not:nocall:error/widget"
+                              tal:content="structure error/render"
+                              />
+                          </tal:block>
+                          <tal:block define="view nocall:group">
+                            <metal:define define-macro="group_widget_rendering">
+                                <tal:widgets repeat="widget view/widgets/values">
+                                    <metal:field-slot define-slot="groupfield">
+                                        <metal:field define-macro="groupfield">
+                                            <tal:widget tal:replace="structure widget/@@ploneform-render-widget"/>
+                                        </metal:field>
+                                    </metal:field-slot>
+                                </tal:widgets>
+                            </metal:define>
+                          </tal:block>
+                        </fieldset>
+                      </tal:block>
+                    </metal:fields-slot>
+                  </metal:fields-slot>
+                </metal:fields-slot>
+              </metal:block>
+            </tal:with-form-as-view>
+          </tal:form>
+        </div>
+      </tal:main>
+    </metal:main>
+  </body>
+</html>
