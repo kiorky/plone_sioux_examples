@@ -19,19 +19,19 @@
           <tal:form tal:define="form nocall:view/form_instance">
             <tal:with-form-as-view define="view nocall:form">
               <metal:block metal:use-macro="form/@@ploneform-macros/titlelessform">
-                <input type="hidden"
-                  name="fieldset"
-                  tal:define="current_fieldset request/fieldset | string:#fieldsetlegend-default"
-                  tal:condition="python:has_groups and enable_form_tabbing"
-                  tal:attributes="value current_fieldset"
-                  />
-                <metal:fields-slot metal:fill-slot="fields">
+                <etal:fields-slot metal:fill-slot="fields">
                   <metal:fields-slot
                     define-macro="fields"
                     tal:define="show_default_label show_default_label|nothing;
                     hidden_groups form/hidden_groups|hidden_groups|python: [];
                     has_groups has_groups|nothing">
                     <metal:fields-slot metal:define-slot="fields">
+                      <input type="hidden"
+                        name="fieldset"
+                        tal:define="current_fieldset request/fieldset | string:#fieldsetlegend-default"
+                        tal:condition="python:has_groups and enable_form_tabbing"
+                        tal:attributes="value current_fieldset"
+                      />
                       <!-- Default fieldset -->
                       <fieldset id="fieldset-default" tal:omit-tag="not:show_default_label">
                         <legend tal:condition="show_default_label"
