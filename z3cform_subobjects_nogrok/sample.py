@@ -154,7 +154,7 @@ class FormMixin(object):
                 obj.id = id
                 newName = container._setObject(id, obj)
                 added.append(container[newName])
-            return added
+        return added
 
 
 class EditForm(dexterity.EditForm, FormMixin):
