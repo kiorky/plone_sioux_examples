@@ -144,6 +144,8 @@ class FormMixin(object):
         normalizer = getUtility(IIDNormalizer)
         added = []
         for k, data in inner_contenttype.items():
+            if not data:
+                continue
             for obj in data:
                 id = obj.inner_contenttype_body
                 if isinstance(id, list):
